@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:img-back}/database.sqlite",
+            "name": "img db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
