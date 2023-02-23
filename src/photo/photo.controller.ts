@@ -41,7 +41,7 @@ export class PhotoController {
       }),
       fileFilter : (req, file, cb) => {
         console.log(file.originalname);
-        if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg)$/)) {
+        if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png)$/)) {
           console.log("not goood");
           return cb(new Error(`Only image files are allowed! ${file.originalname}`), false);
         }
@@ -57,8 +57,19 @@ export class PhotoController {
       console.log("start recup");
       const data = JSON.parse(_data);
       console.dir(data);
-      const photos : PhotoModel[] = (await this._photoService.findByEnseigne(1));
-      const fichIds : number[] = data.map((mod) => mod['id']);
+      let photos : PhotoModel[] = [];
+  
+      if(data.enseigne){
+
+          photos= (await this._photoService.findByEnseigne(data.enseigne));
+         }
+         
+         if(data.influencer){
+          photos= (await this._photoService.findByInfluencer(data.influencer));
+
+         }
+   
+      const fichIds : number[] = data.photos.map((mod) => mod['id']);
       
       photos.forEach((photo) => {
         if (!fichIds.includes(photo.id)) {
@@ -66,10 +77,10 @@ export class PhotoController {
           console.log(`remove ${photo.id} , delete file ${photo.filepath}`);
           photo.set({deleted : 1}).save();  
         } else {
-          //update picture
-          console.log(`update photo.id=${photo.id} with order=${data[fichIds.indexOf(photo.id)].newOrder}`);
+          //update picture.photos
+          console.log(`update photo.id=${photo.id} with order=${data.photos[fichIds.indexOf(photo.id)].newOrder}`);
           //update the order
-          photo.set({order : data[fichIds.indexOf(photo.id)].newOrder}).save();  
+          photo.set({order : data.photos[fichIds.indexOf(photo.id)].newOrder}).save();  
         }
       });
 
@@ -79,7 +90,7 @@ export class PhotoController {
             throw new BadRequestException('invalid file provided');
         }
 
-        const data_ = data.find(item => item.source.indexOf(`/${files.originalname}`)>0);
+        const data_ = data.photos.find(item => item.source.indexOf(`/${files.originalname}`)>0);
         console.log(files.originalname+ " - "+ files.mimetype);
         console.log(files.filename);
         console.log(files.size);
