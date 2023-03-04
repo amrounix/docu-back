@@ -20,8 +20,8 @@ export class PhotoController {
     }
 
     @Get('doc-influencer/:influencerId')
-    getDocByInfluencerId(): Promise<PhotoModel[]> {
-      return this._photoService.findAll();
+    getDocByInfluencerId(@Param('influencerId') influencerId): Promise<PhotoModel[]> {
+      return this._photoService.findByInfluencer(influencerId);
     }
 
 
@@ -41,7 +41,7 @@ export class PhotoController {
       }),
       fileFilter : (req, file, cb) => {
         console.log(file.originalname);
-        if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png)$/)) {
+        if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|pdf)$/)) {
           console.log("not goood");
           return cb(new Error(`Only image files are allowed! ${file.originalname}`), false);
         }
@@ -58,7 +58,7 @@ export class PhotoController {
       const data = JSON.parse(_data);
       console.dir(data);
       let photos : PhotoModel[] = [];
-  
+      
       if(data.enseigne){
 
           photos= (await this._photoService.findByEnseigne(data.enseigne));
@@ -114,7 +114,8 @@ export class PhotoController {
         await this._photoService.create({
           enseigneId: data_.enseigneId,
           influencerId: data_.influencerId,
-          filepath: data_.influencerId!=null ? join( `ìnfluencer` , `${data_.influencerId}`,files.filename):join( `enseigne` , `${data_.enseigneId}`,files.filename) ,
+          fileName: data_.fileName,
+          filepath: data_.influencerId!=null ? join( `influencer` , `${data_.influencerId}`,files.filename):join( `enseigne` , `${data_.enseigneId}`,files.filename) ,
           order: data_.newOrder,
           deleted: 0
         });

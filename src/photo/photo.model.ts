@@ -13,6 +13,9 @@ export class PhotoModel extends Model<PhotoModel> {
     influencerId: number;
 
     @Column
+    fileName: string;
+
+    @Column
     filetype: number;
 
     @Column

@@ -12,7 +12,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
     .build();
-  app.useStaticAssets(staticAssetsPath, { prefix: '/static/' });
+  app.useStaticAssets(uploadRootPath, { prefix: '/uploads/' });
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/swagger', app, document);
