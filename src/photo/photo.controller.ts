@@ -1,13 +1,16 @@
 
 import { BadRequestException, Body, Controller, Get, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { rename } from 'fs';
+import { createWriteStream, rename } from 'fs';
 import { mkdir } from 'fs/promises';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { uploadRootPath } from 'src/utils/path.util';
 import { PhotoModel } from './photo.model';
 import { PhotoService } from './photo.service';
+import { v4 } from 'uuid';
+
+//import { fileTypeFromStream } from 'file-type/core';
 
 @Controller('docu')
 export class PhotoController {
@@ -30,6 +33,16 @@ export class PhotoController {
       return res.sendFile(image, { root: uploadRootPath });
     }
   
+    @Get('img-profil')
+    async importProfilPicture(@Param('imgurl') imgurl,@Param('uuid') uuid) {
+    console.log(imgurl);
+      const url_ = imgurl ??
+      "https://scontent-fra5-2.cdninstagram.com/v/t51.2885-19/347726833_213810691445325_7230259483751815249_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent-fra5-2.cdninstagram.com&_nc_cat=109&_nc_ohc=LW6JxEn4uckAX9k6hhH&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfDIpeG9C419pQ7zzoBQ-e2ODxYTOeFh7dK3Uq0wShvhZg&oe=65612A9B&_nc_sid=ee9879";
+      const token = uuid ?? v4();
+      return await this._photoService.importProfilPicture(url_ , token);
+      //return res.sendFile(image, { root: uploadRootPath });
+    }
+
     @Post('upload')
     @UseInterceptors(FilesInterceptor('file', 10, {
       storage: diskStorage({
@@ -159,3 +172,5 @@ export class PhotoController {
 */
 
 }
+
+

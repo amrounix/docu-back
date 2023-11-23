@@ -1,6 +1,7 @@
 import { join } from 'path';
 
-export const getRootPath = () => join(process.cwd());
+export const getRootPath = () =>
+  process.cwd().endsWith('dist') ? join(process.cwd(), '..', '..') : join(process.cwd(), '..');
 /* {
   
   return process.cwd();

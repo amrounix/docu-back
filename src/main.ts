@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { getRootPath, staticAssetsPath, uploadRootPath } from './utils/path.util';
+import { mkdir } from 'fs/promises';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -12,6 +13,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
     .build();
+  await mkdir(uploadRootPath, { recursive: true });
   app.useStaticAssets(uploadRootPath, { prefix: '/uploads/' });
 
   const document = SwaggerModule.createDocument(app, config);

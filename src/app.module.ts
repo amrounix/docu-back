@@ -5,9 +5,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { PhotoModel } from './photo/photo.model';
 import { PhotoModule } from './photo/photo.module';
 import { uploadRootPath } from './utils/path.util';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     /* ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
       exclude: ['/api*'],

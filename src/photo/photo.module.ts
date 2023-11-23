@@ -3,9 +3,10 @@ import { PhotoService } from './photo.service';
 import { PhotoController } from './photo.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { PhotoModel } from './photo.model';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [SequelizeModule.forFeature([PhotoModel])],
+  imports: [SequelizeModule.forFeature([PhotoModel]), HttpModule],
   providers: [PhotoService],
   controllers: [PhotoController],
 })
